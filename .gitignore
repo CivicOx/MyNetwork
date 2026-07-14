@@ -1,0 +1,15 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+stderr.txt
+stdout.txt
+
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json
+
+# IDE
+.idea/
+*.iml

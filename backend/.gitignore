@@ -1,0 +1,23 @@
+# Environment — contains API keys
+.env
+
+# Virtual environment
+venv/
+.venv/
+
+# Database — contains personal data
+*.db
+*.sqlite
+*.sqlite3
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Uploaded files
+uploads/
+
+# Logs
+stderr.txt
+stdout.txt

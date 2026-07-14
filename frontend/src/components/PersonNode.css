@@ -1,0 +1,34 @@
+.person-node {
+  background: #1e293b;
+  border: 1.5px solid #334155;
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 160px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.person-node:hover { border-color: #38bdf8; }
+
+.pn-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #334155;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #94a3b8;
+}
+.pn-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.pn-info { min-width: 0; }
+.pn-name { font-size: 0.875rem; font-weight: 600; color: #e2e8f0; white-space: nowrap; }
+.pn-title { font-size: 0.75rem; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pn-company { font-size: 0.7rem; color: #64748b; white-space: nowrap; }

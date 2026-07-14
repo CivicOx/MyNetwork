@@ -1,0 +1,25 @@
+.network-view {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.network-toolbar {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* override react-flow defaults to match dark theme */
+.react-flow__background { background: #0f172a; }
+.react-flow__controls { background: #1e293b; border: 1px solid #334155; }
+.react-flow__controls-button {
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+  color: #94a3b8;
+}
+.react-flow__controls-button:hover { background: #334155; }
+.react-flow__minimap { background: #0f172a; border: 1px solid #334155; }
