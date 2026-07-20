@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   View, Text, ScrollView, TextInput, TouchableOpacity,
-  StyleSheet, Alert, ActivityIndicator,
+  StyleSheet, Alert, ActivityIndicator, Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { people as peopleApi } from "../api";
@@ -66,6 +66,27 @@ export default function PersonDetailScreen({ route, navigation }) {
           )}
         </View>
 
+        <Text style={s.section}>Photo</Text>
+        <Field
+          label="Photo URL"
+          value={form.photo_url}
+          onChangeText={set("photo_url")}
+          placeholder="https://example.com/photo.jpg"
+        />
+        <TouchableOpacity
+          style={s.imageSearchBtn}
+          onPress={() => {
+            const q = encodeURIComponent([form.name, form.company].filter(Boolean).join(' '));
+            Linking.openURL(`https://www.google.com/search?q=${q}&tbm=isch`);
+          }}
+        >
+          <Ionicons name="search" size={14} color="#3b82f6" />
+          <Text style={s.imageSearchText}>Search Google Images</Text>
+        </TouchableOpacity>
+        <Text style={s.hint}>
+          Find an image, long-press it to copy the URL, then paste it above.
+        </Text>
+
         <Text style={s.section}>Contact</Text>
         <Field label="Name" value={form.name} onChangeText={set("name")} />
         <Field label="Email" value={form.email} onChangeText={set("email")} placeholder="you@example.com" />
@@ -117,6 +138,15 @@ const s = StyleSheet.create({
   multiline: { height: 80, textAlignVertical: "top" },
   bioBox: { backgroundColor: "#1e293b", borderRadius: 8, padding: 12, borderWidth: 1, borderColor: "#334155" },
   bioText: { color: "#94a3b8", fontSize: 14, lineHeight: 20 },
+  imageSearchBtn: {
+    flexDirection: "row", alignItems: "center", gap: 6,
+    paddingVertical: 8, paddingHorizontal: 12,
+    backgroundColor: "#1e3a5f", borderRadius: 8,
+    borderWidth: 1, borderColor: "#3b82f633",
+    marginBottom: 8, alignSelf: "flex-start",
+  },
+  imageSearchText: { color: "#3b82f6", fontSize: 13, fontWeight: "600" },
+  hint: { color: "#475569", fontSize: 11, lineHeight: 16, marginBottom: 8 },
   deleteBtn: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 32, gap: 6 },
   deleteText: { color: "#ef4444", fontSize: 14 },
   bar: { position: "absolute", bottom: 0, left: 0, right: 0, padding: 16, backgroundColor: "#0f172a", borderTopWidth: 1, borderTopColor: "#1e293b" },

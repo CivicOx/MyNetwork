@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert, Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -116,6 +116,25 @@ export default function NetworkGraphScreen({ navigation }) {
       loadGraph();
     }, [loadGraph]),
   );
+
+  // Web-only: attach wheel zoom only while this tab is focused so other
+  // screens (People list, etc.) can scroll normally with the mouse wheel.
+  useFocusEffect(
+    useCallback(() => {
+      if (Platform.OS !== 'web') return;
+      const handler = (e) => graphRef.current?.handleWheel(e);
+      window.addEventListener('wheel', handler, { passive: false });
+      return () => window.removeEventListener('wheel', handler);
+    }, []),
+  );
+
+  // Auto fit-to-screen after each load — mirrors the fit FAB button
+  useEffect(() => {
+    if (!loading && nodes.length > 0) {
+      const t = setTimeout(() => graphRef.current?.fitToScreen(), 80);
+      return () => clearTimeout(t);
+    }
+  }, [loading]);
 
   const cancelConn = useCallback(() => {
     setConnMode(CONN_IDLE);

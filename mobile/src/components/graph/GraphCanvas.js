@@ -12,8 +12,8 @@ const SCALE_MAX = 4;
 const FIT_PADDING = 64;
 
 // Node half-dimensions (must match GraphNode.js constants)
-const NODE_HW = 60;
-const NODE_HH = 25;
+const NODE_HW = 76;
+const NODE_HH = 27;
 const SELF_HR = 36;
 
 // Size of the midpoint edit button in world coordinate units
@@ -35,6 +35,18 @@ const GraphCanvas = forwardRef(function GraphCanvas(
   nodesRef.current = nodes;
 
   useImperativeHandle(ref, () => ({
+    handleWheel(e) {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.1 : 0.9;
+      const oldScale = scaleVal.current;
+      const newScale = Math.max(SCALE_MIN, Math.min(SCALE_MAX, oldScale * factor));
+      const r = newScale / oldScale;
+      vpX.current = (e.clientX - HALF) * (1 - r) + r * vpX.current;
+      vpY.current = (e.clientY - HALF) * (1 - r) + r * vpY.current;
+      scaleVal.current = newScale;
+      vpAnim.setValue({ x: vpX.current, y: vpY.current });
+      scaleAnim.setValue(newScale);
+    },
     fitToScreen() {
       const all = nodesRef.current;
       if (all.length === 0) return;
