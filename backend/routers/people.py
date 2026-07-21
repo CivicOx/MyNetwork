@@ -53,15 +53,6 @@ def create_person(data: PersonCreate, db: Session = Depends(get_db)):
     db.add(person)
     db.commit()
     db.refresh(person)
-
-    # try to download photo_url at creation time so it's stored locally
-    if person.photo_url:
-        path = _download_photo(person.photo_url)
-        if path:
-            person.photo_path = str(path)
-            db.commit()
-            db.refresh(person)
-
     return person
 
 

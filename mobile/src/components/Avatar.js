@@ -2,10 +2,10 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { BASE_URL } from "../api";
 
 export default function Avatar({ person, size = 40 }) {
-  const src = person?.photo_path
-    ? { uri: `${BASE_URL}/${person.photo_path}` }
-    : person?.photo_url
+  const src = person?.photo_url
     ? { uri: person.photo_url }
+    : person?.photo_path
+    ? { uri: `${BASE_URL}/${person.photo_path}` }
     : null;
 
   const initial = (person?.name || "?").charAt(0).toUpperCase();
