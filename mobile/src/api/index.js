@@ -1,8 +1,26 @@
 import axios from "axios";
+import { Alert } from "react-native";
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
-const api = axios.create({ baseURL: BASE_URL });
+const api = axios.create({ baseURL: BASE_URL, timeout: 10000 });
+
+api.interceptors.response.use(
+  (r) => r,
+  (err) => {
+    const status = err.response?.status;
+    if (!status) {
+      Alert.alert("Connection Error", "Could not reach the server. Check your internet connection and try again.");
+    } else if (status >= 500) {
+      Alert.alert("Server Error", `Something went wrong on the server (${status}). Try again in a moment.`);
+    }
+    return Promise.reject(err);
+  }
+);
+
+export const health = {
+  check: () => api.get("/health").then((r) => r.data),
+};
 
 export const people = {
   list: () => api.get("/people/").then((r) => r.data),

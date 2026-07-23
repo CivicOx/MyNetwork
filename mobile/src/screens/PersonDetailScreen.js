@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   View, Text, ScrollView, TextInput, TouchableOpacity,
   StyleSheet, Alert, ActivityIndicator, Linking,
@@ -27,13 +27,31 @@ function Field({ label, value, onChangeText, multiline, placeholder }) {
 export default function PersonDetailScreen({ route, navigation }) {
   const [form, setForm] = useState({ ...route.params.person });
   const [saving, setSaving] = useState(false);
+  const formRef = useRef(form);
+  const isDirty = useRef(false);
 
-  const set = (k) => (v) => setForm((f) => ({ ...f, [k]: v }));
+  const set = (k) => (v) => setForm((f) => {
+    const next = { ...f, [k]: v };
+    formRef.current = next;
+    isDirty.current = true;
+    return next;
+  });
+
+  // Auto-save when the user navigates away without tapping Save
+  useEffect(() => {
+    const unsub = navigation.addListener("beforeRemove", () => {
+      if (isDirty.current) {
+        peopleApi.update(formRef.current.id, formRef.current).catch(() => {});
+      }
+    });
+    return unsub;
+  }, [navigation]);
 
   const handleSave = async () => {
     setSaving(true);
     try {
       await peopleApi.update(form.id, form);
+      isDirty.current = false;
       navigation.goBack();
     } catch (e) {
       Alert.alert("Error", "Failed to save changes.");

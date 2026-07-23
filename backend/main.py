@@ -71,4 +71,6 @@ app.include_router(outreach.router)
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    from database import DATABASE_URL
+    db_type = "postgresql" if DATABASE_URL.startswith("postgresql") else "sqlite"
+    return {"status": "ok", "db": db_type, "url": DATABASE_URL.split("@")[-1] if "@" in DATABASE_URL else DATABASE_URL}

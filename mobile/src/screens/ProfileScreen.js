@@ -3,7 +3,7 @@ import {
   View, Text, ScrollView, TextInput, TouchableOpacity,
   StyleSheet, ActivityIndicator, Alert,
 } from "react-native";
-import { profile as profileApi } from "../api";
+import { profile as profileApi, health as healthApi, BASE_URL } from "../api";
 import Avatar from "../components/Avatar";
 
 function Field({ label, value, onChangeText, multiline, placeholder }) {
@@ -28,6 +28,7 @@ export default function ProfileScreen() {
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [dbStatus, setDbStatus] = useState(null);
 
   useEffect(() => {
     profileApi.get().then((p) => setForm({
@@ -35,6 +36,7 @@ export default function ProfileScreen() {
       education: p.education || [],
       work_history: p.work_history || [],
     }));
+    healthApi.check().then((h) => setDbStatus(h.db)).catch(() => setDbStatus("unreachable"));
   }, []);
 
   const set = (k) => (v) => setForm((f) => ({ ...f, [k]: v }));
@@ -110,6 +112,13 @@ export default function ProfileScreen() {
             ? <ActivityIndicator color="#fff" />
             : <Text style={s.saveTxt}>{saved ? "Saved ✓" : "Save Profile"}</Text>}
         </TouchableOpacity>
+        {dbStatus && (
+          <View style={[s.dbBadge, dbStatus === "postgresql" ? s.dbGood : s.dbWarn]}>
+            <Text style={s.dbText}>
+              {dbStatus === "postgresql" ? "PostgreSQL" : dbStatus === "sqlite" ? "SQLite (data not persistent!)" : "Server unreachable"}
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -131,7 +140,11 @@ const s = StyleSheet.create({
   cardTitle: { color: "#f1f5f9", fontSize: 14, fontWeight: "600" },
   cardSub: { color: "#94a3b8", fontSize: 12, marginTop: 2 },
   cardDesc: { color: "#64748b", fontSize: 12, marginTop: 4 },
-  bar: { position: "absolute", bottom: 0, left: 0, right: 0, padding: 16, backgroundColor: "#0f172a", borderTopWidth: 1, borderTopColor: "#1e293b" },
+  bar: { position: "absolute", bottom: 0, left: 0, right: 0, padding: 16, paddingBottom: 20, backgroundColor: "#0f172a", borderTopWidth: 1, borderTopColor: "#1e293b" },
   saveBtn: { backgroundColor: "#3b82f6", borderRadius: 10, padding: 14, alignItems: "center" },
   saveTxt: { color: "#fff", fontWeight: "700", fontSize: 15 },
+  dbBadge: { marginTop: 8, borderRadius: 6, paddingVertical: 4, paddingHorizontal: 10, alignSelf: "center" },
+  dbGood: { backgroundColor: "#052e16" },
+  dbWarn: { backgroundColor: "#450a0a" },
+  dbText: { fontSize: 11, fontWeight: "600", color: "#86efac" },
 });
